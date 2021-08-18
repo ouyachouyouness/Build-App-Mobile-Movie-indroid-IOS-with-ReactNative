@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { getPopularMovies, getUpcomingMovies, getPopularTv } from '../services/services'
+import { getPopularMovies, getUpcomingMovies, getPopularTv, getFamilyMovies } from '../services/services'
 import  List from '../components/List'
 import { SliderBox } from "react-native-image-slider-box"
 
@@ -10,6 +10,7 @@ const Home = () => {
 
     const [moviesImages, setMoviesImages] = useState('');
     const [popularMovies, setPopularMovies] = useState('');
+    const [familyMovies, setFamilyMovies] = useState('');
     const [popularTv, setPopularTv] = useState('');
     const [error, setError] = useState(false);
 
@@ -40,6 +41,13 @@ const Home = () => {
             }).catch(err => {
                 setError(err);
             });
+
+        getFamilyMovies()
+            .then(movies => {
+                setFamilyMovies(movies)
+            }).catch(err => {
+                setError(err);
+            });
     }, [])
     return (
 
@@ -65,6 +73,10 @@ const Home = () => {
 
         <View style= { styles.carousel}>
             <List title={'Popular Tv'} content= {popularTv} />
+        </View>
+
+        <View style= { styles.carousel}>
+            <List title={'Family Movies'} content= {familyMovies} />
         </View>
         
         </ScrollView>
