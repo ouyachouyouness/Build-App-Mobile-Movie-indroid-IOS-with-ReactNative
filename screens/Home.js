@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView, ActivityIndicator  } from 'react-native';
 import { getPopularMovies, getUpcomingMovies, getPopularTv, getFamilyMovies, getHorrorMovies } from '../services/services'
 import  List from '../components/List'
 import { SliderBox } from "react-native-image-slider-box"
@@ -9,11 +9,14 @@ const dimentions = Dimensions.get('screen');
 const Home = () => {
 
     const [moviesImages, setMoviesImages] = useState('');
-    const [popularMovies, setPopularMovies] = useState('');
-    const [familyMovies, setFamilyMovies] = useState('');
-    const [horrorMovies, setHorrorMovies] = useState('');
-    const [popularTv, setPopularTv] = useState('');
+    const [popularMovies, setPopularMovies] = useState();
+    const [familyMovies, setFamilyMovies] = useState();
+    const [horrorMovies, setHorrorMovies] = useState();
+    const [popularTv, setPopularTv] = useState();
+    
     const [error, setError] = useState(false);
+    const [loaded, setLoaded] = useState(false);
+    
 
     const getData = () => {
         return Promise.all([
@@ -35,7 +38,7 @@ const Home = () => {
             HorrorMoviesData]) => {
                 const moviesImagesArray = [];
                 UpcomingMoviesData.forEach(movie => {
-                    moviesImagesArray.push('https://image.tmdb.org/t/p/w500' + movie.poster_path)
+                     moviesImagesArray.push('https://image.tmdb.org/t/p/w500' + movie.poster_path)
 
                 })
                 setMoviesImages(moviesImagesArray);
@@ -43,16 +46,19 @@ const Home = () => {
                 setPopularTv(PopularTvData)
                 setFamilyMovies(FamilyMoviesData)
                 setHorrorMovies(HorrorMoviesData)
+                
 
             }).catch(err => {
                 setError(err)
+            }).finally(()=> {
+                setLoaded(true)
             })
     
     }, [])
     return (
 
     <React.Fragment>
-        <ScrollView>
+        {loaded && (<ScrollView>
         <View
             style={
                 styles.sliderContainer
@@ -65,29 +71,33 @@ const Home = () => {
             />
         </View>
 
-        
+        {/* popularMovies */}
         {popularMovies && 
         (<View style= { styles.carousel}>
             <List title={'Popular Movies'} content= {popularMovies}></List>
         </View>)}
         
+        {/* popularTv */}
         {popularTv && 
         (<View style= { styles.carousel}>
             <List title={'Popular Tv Shows'} content= {popularTv} />
         </View>)}
         
+        {/* familyMovies */}
         {familyMovies && 
         (<View style= { styles.carousel}>
             <List title={'Family Movies'} content= {familyMovies} />
         </View>)}
         
+        {/* horrorMovies */}
         {horrorMovies && 
         (<View style= { styles.carousel}>
             <List title={'Horror Movies'} content= {horrorMovies} />
         </View>)}
         
         
-        </ScrollView>
+        </ScrollView>)}
+        {!loaded && <ActivityIndicator size="large" /> }
     </React.Fragment>
     );
 }
