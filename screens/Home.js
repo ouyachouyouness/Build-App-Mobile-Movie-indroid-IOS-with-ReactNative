@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {Text, View, StyleSheet, Dimensions, FlatList } from 'react-native';
 import { getPopularMovies, getUpcomingMovies } from '../services/services'
-
+import  List from '../components/List'
 import { SliderBox } from "react-native-image-slider-box"
 
 
@@ -48,12 +48,10 @@ const Home = () => {
             />
         </View>
 
+        
+
         <View style= { styles.carousel}>
-            <FlatList 
-                data= { popularMovies}
-                horizontal= {true}
-                renderItem = {({item}) => <Text>{item.title} </Text>}
-            ></FlatList>
+            <List title="My List Component Title" content= {popularMovies}></List>
         </View>
     </React.Fragment>
     );
@@ -73,7 +71,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 20,
+        marginTop: 20
     }
 })
 
