@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { getPopularMovies, getUpcomingMovies, getPopularTv, getFamilyMovies } from '../services/services'
+import { getPopularMovies, getUpcomingMovies, getPopularTv, getFamilyMovies, getHorrorMovies } from '../services/services'
 import  List from '../components/List'
 import { SliderBox } from "react-native-image-slider-box"
 
@@ -11,43 +11,43 @@ const Home = () => {
     const [moviesImages, setMoviesImages] = useState('');
     const [popularMovies, setPopularMovies] = useState('');
     const [familyMovies, setFamilyMovies] = useState('');
+    const [horrorMovies, setHorrorMovies] = useState('');
     const [popularTv, setPopularTv] = useState('');
     const [error, setError] = useState(false);
 
+    const getData = () => {
+        return Promise.all([
+            getUpcomingMovies(),
+            getPopularMovies(),
+            getPopularTv(),
+            getFamilyMovies(),
+            getHorrorMovies()
+
+
+        ])
+    }
     useEffect(() => {
 
-        getUpcomingMovies()
-            .then(movies => {
+        getData().then(([UpcomingMoviesData,
+            PopularMoviesData,
+            PopularTvData,
+            FamilyMoviesData,
+            HorrorMoviesData]) => {
                 const moviesImagesArray = [];
-                movies.forEach(movie => {
+                UpcomingMoviesData.forEach(movie => {
                     moviesImagesArray.push('https://image.tmdb.org/t/p/w500' + movie.poster_path)
 
                 })
                 setMoviesImages(moviesImagesArray);
-            }).catch(err => {
-                setError(err);
-            });
+                setPopularMovies(PopularMoviesData)
+                setPopularTv(PopularTvData)
+                setFamilyMovies(FamilyMoviesData)
+                setHorrorMovies(HorrorMoviesData)
 
-        getPopularMovies()
-            .then(movies => {
-                setPopularMovies(movies)
             }).catch(err => {
-                setError(err);
-            });
-
-        getPopularTv()
-            .then(movies => {
-                setPopularTv(movies)
-            }).catch(err => {
-                setError(err);
-            });
-
-        getFamilyMovies()
-            .then(movies => {
-                setFamilyMovies(movies)
-            }).catch(err => {
-                setError(err);
-            });
+                setError(err)
+            })
+    
     }, [])
     return (
 
@@ -66,18 +66,26 @@ const Home = () => {
         </View>
 
         
-
-        <View style= { styles.carousel}>
+        {popularMovies && 
+        (<View style= { styles.carousel}>
             <List title={'Popular Movies'} content= {popularMovies}></List>
-        </View>
-
-        <View style= { styles.carousel}>
-            <List title={'Popular Tv'} content= {popularTv} />
-        </View>
-
-        <View style= { styles.carousel}>
+        </View>)}
+        
+        {popularTv && 
+        (<View style= { styles.carousel}>
+            <List title={'Popular Tv Shows'} content= {popularTv} />
+        </View>)}
+        
+        {familyMovies && 
+        (<View style= { styles.carousel}>
             <List title={'Family Movies'} content= {familyMovies} />
-        </View>
+        </View>)}
+        
+        {horrorMovies && 
+        (<View style= { styles.carousel}>
+            <List title={'Horror Movies'} content= {horrorMovies} />
+        </View>)}
+        
         
         </ScrollView>
     </React.Fragment>
