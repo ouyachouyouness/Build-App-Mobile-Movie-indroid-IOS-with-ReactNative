@@ -6,7 +6,7 @@ import { SliderBox } from "react-native-image-slider-box"
 import Error from '../components/Error'
 
 const dimentions = Dimensions.get('screen');
-const Home = () => {
+const Home = ({navigation}) => {
 
     const [moviesImages, setMoviesImages] = useState('');
     const [popularMovies, setPopularMovies] = useState();
@@ -58,7 +58,7 @@ const Home = () => {
     return (
 
     <React.Fragment>
-        {loaded && error && (<ScrollView>
+        {loaded && !error && (<ScrollView>
         <View
             style={
                 styles.sliderContainer
@@ -74,31 +74,31 @@ const Home = () => {
         {/* popularMovies */}
         {popularMovies && 
         (<View style= { styles.carousel}>
-            <List title={'Popular Movies'} content= {popularMovies}></List>
+            <List navigation = {navigation} title={'Popular Movies'} content= {popularMovies}></List>
         </View>)}
         
         {/* popularTv */}
         {popularTv && 
         (<View style= { styles.carousel}>
-            <List title={'Popular Tv Shows'} content= {popularTv} />
+            <List navigation = {navigation} title={'Popular Tv Shows'} content= {popularTv} />
         </View>)}
         
         {/* familyMovies */}
         {familyMovies && 
         (<View style= { styles.carousel}>
-            <List title={'Family Movies'} content= {familyMovies} />
+            <List navigation = {navigation} title={'Family Movies'} content= {familyMovies} />
         </View>)}
         
         {/* horrorMovies */}
         {horrorMovies && 
         (<View style= { styles.carousel}>
-            <List title={'Horror Movies'} content= {horrorMovies} />
+            <List navigation = {navigation} title={'Horror Movies'} content= {horrorMovies} />
         </View>)}
         
         
         </ScrollView>)}
         {!loaded && <ActivityIndicator size="large" /> }
-        {!error && <Error/> }
+        {error && <Error/> }
     </React.Fragment>
     );
 }
