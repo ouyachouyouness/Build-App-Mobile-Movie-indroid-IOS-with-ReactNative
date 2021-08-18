@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {Text, View, StyleSheet, Dimensions, FlatList } from 'react-native';
-import { getPopularMovies, getUpcomingMovies } from '../services/services'
+import {Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { getPopularMovies, getUpcomingMovies, getPopularTv } from '../services/services'
 import  List from '../components/List'
 import { SliderBox } from "react-native-image-slider-box"
 
@@ -10,6 +10,7 @@ const Home = () => {
 
     const [moviesImages, setMoviesImages] = useState('');
     const [popularMovies, setPopularMovies] = useState('');
+    const [popularTv, setPopularTv] = useState('');
     const [error, setError] = useState(false);
 
     useEffect(() => {
@@ -32,10 +33,18 @@ const Home = () => {
             }).catch(err => {
                 setError(err);
             });
+
+        getPopularTv()
+            .then(movies => {
+                setPopularTv(movies)
+            }).catch(err => {
+                setError(err);
+            });
     }, [])
     return (
 
     <React.Fragment>
+        <ScrollView>
         <View
             style={
                 styles.sliderContainer
@@ -51,8 +60,14 @@ const Home = () => {
         
 
         <View style= { styles.carousel}>
-            <List title="My List Component Title" content= {popularMovies}></List>
+            <List title={'Popular Movies'} content= {popularMovies}></List>
         </View>
+
+        <View style= { styles.carousel}>
+            <List title={'Popular Tv'} content= {popularTv} />
+        </View>
+        
+        </ScrollView>
     </React.Fragment>
     );
 }
