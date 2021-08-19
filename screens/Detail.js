@@ -1,11 +1,14 @@
+
 import React, {useState, useEffect} from 'react'
-import { ScrollView, StyleSheet, Image} from 'react-native'
+import { View,Text, ScrollView, StyleSheet, Image, Dimensions, ActivityIndicator} from 'react-native'
+import StarRating from 'react-native-star-rating'
 import {getMovie} from '../services/services'
 
-const placeholderImage = require('../assets/images/yy.jpg')
 
-const Detail = (route, navigation) => {
-    const movieId = route.params.movieDetail.id
+const placeholderImage = require('../assets/images/yy.jpg')
+const height = Dimensions.get('screen').height
+const Detail = ({route, navigation}) => {
+    const movieId = route.params.movieId 
 
     const [movieDetail, setMovieDetail] = useState();
     const [loaded, setLoaded] = useState(false);
@@ -20,7 +23,7 @@ const Detail = (route, navigation) => {
     }, [movieId])
     return (
         <React.Fragment>
-            {loaded && (<ScrollView >
+            {loaded && (<ScrollView  >
                 <Image
                     resizeMode = "cover"
                     style = {styles.image} 
@@ -29,7 +32,29 @@ const Detail = (route, navigation) => {
                         {uri: 'https://image.tmdb.org/t/p/w500'+ movieDetail .poster_path}
                         : placeholderImage
                     }/>
+            <View style={styles.container} >
+                <Text style={styles.movieTitle}>{movieDetail.title}</Text>
+                {movieDetail.genres && ( <View style={styles.genrescontainer}>
+                    {movieDetail.genres.map(genre => {
+                            return (<Text style={styles.genre} key={genre.id}>
+                                {genre.name}
+                            </Text>)
+                    })}
+                
+                </View>)}
+
+                <StarRating 
+                 disabled={true}
+                 maxStars={5}
+                 starSize={30}
+                 rating={movieDetail.vote_average/2}
+                 fullStarColor={'gold'}
+                 />
+               
+            </View>
             </ScrollView>)}
+            {!loaded && <ActivityIndicator size="large" /> }
+
         </React.Fragment>
     );
 }
@@ -37,11 +62,31 @@ const Detail = (route, navigation) => {
 const styles =StyleSheet.create({
 
     image: {
-        height:200,
-        width: 120,
-        borderRadius: 20 
+        height:height/2.5,
+      
     },
-    
+    movieTitle: {
+        fontSize:24,
+        fontWeight: 'bold',
+        marginTop:10,
+        marginBottom:10,
+    },
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 20,
+    },
+    genrescontainer: {
+        flexDirection: 'row',
+        alignContent:'center',
+        marginTop :20,
+        marginBottom:20,
+    },
+    genre:{
+        marginRight: 10,
+        fontWeight:'bold'
+    }
 
 }) 
 

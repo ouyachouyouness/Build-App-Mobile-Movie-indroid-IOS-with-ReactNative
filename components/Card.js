@@ -14,7 +14,9 @@ class Card extends React.PureComponent {
         
         return (
             <TouchableOpacity onPress = {() => navigation.navigate('Detail',{
-                movieDetail: item,
+                      movieId: item.id
+               
+                
             })} style={styles.container}>
                 <Image
                     resizeMode = "cover"
