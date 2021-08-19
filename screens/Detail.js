@@ -2,7 +2,9 @@
 import React, {useState, useEffect} from 'react'
 import { View,Text, ScrollView, StyleSheet, Image, Dimensions, ActivityIndicator} from 'react-native'
 import StarRating from 'react-native-star-rating'
+import PlayButton from '../components/PlayButton'
 import {getMovie} from '../services/services'
+
 
 
 const placeholderImage = require('../assets/images/yy.jpg')
@@ -33,6 +35,9 @@ const Detail = ({route, navigation}) => {
                         : placeholderImage
                     }/>
             <View style={styles.container} >
+                <View style={styles.PlayButton}>
+                    <PlayButton />
+                </View>
                 <Text style={styles.movieTitle}>{movieDetail.title}</Text>
                 {movieDetail.genres && ( <View style={styles.genrescontainer}>
                     {movieDetail.genres.map(genre => {
@@ -50,6 +55,9 @@ const Detail = ({route, navigation}) => {
                  rating={movieDetail.vote_average/2}
                  fullStarColor={'gold'}
                  />
+
+                <Text style={styles.overview}>{movieDetail.overview}</Text>
+                <Text style={styles.release}>{'Release date : '+ movieDetail.release_date}</Text>
                
             </View>
             </ScrollView>)}
@@ -86,6 +94,18 @@ const styles =StyleSheet.create({
     genre:{
         marginRight: 10,
         fontWeight:'bold'
+    },
+    overview:{
+        padding:15,
+
+    },
+    release:{
+        fontWeight: 'bold'
+    },
+    PlayButton:{
+        position: 'absolute',
+        top: -45,
+        right: 20,
     }
 
 }) 
