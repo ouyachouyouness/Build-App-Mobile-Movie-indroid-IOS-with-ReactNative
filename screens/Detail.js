@@ -1,9 +1,21 @@
 
 import React, {useState, useEffect} from 'react'
-import { View,Text, ScrollView, StyleSheet, Image, Dimensions, ActivityIndicator} from 'react-native'
+import {  Modal,
+    View,
+    Text,
+     ScrollView,
+     StyleSheet,
+     Image,
+     Dimensions,
+     ActivityIndicator,
+     Pressable  
+} from 'react-native'
 import StarRating from 'react-native-star-rating'
 import PlayButton from '../components/PlayButton'
 import {getMovie} from '../services/services'
+import VideoPlayer from 'react-native-video-controls';
+import Vedio from '../components/Vedio'
+
 
 
 
@@ -14,6 +26,8 @@ const Detail = ({route, navigation}) => {
 
     const [movieDetail, setMovieDetail] = useState();
     const [loaded, setLoaded] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+
 
 
     useEffect(() => {
@@ -23,9 +37,16 @@ const Detail = ({route, navigation}) => {
         })
         
     }, [movieId])
+
+    const videoShown = () => {
+        setModalVisible(!modalVisible)
+    }
     return (
         <React.Fragment>
-            {loaded && (<ScrollView  >
+         
+            {loaded && (
+            <View>  
+            <ScrollView>
                 <Image
                     resizeMode = "cover"
                     style = {styles.image} 
@@ -36,14 +57,13 @@ const Detail = ({route, navigation}) => {
                     }/>
             <View style={styles.container} >
                 <View style={styles.PlayButton}>
-                    <PlayButton />
+                    <PlayButton handlePress ={videoShown}/>
                 </View>
                 <Text style={styles.movieTitle}>{movieDetail.title}</Text>
-                {movieDetail.genres && ( <View style={styles.genrescontainer}>
+                {movieDetail.genres && (<View style={styles.genrescontainer}>
                     {movieDetail.genres.map(genre => {
                             return (<Text style={styles.genre} key={genre.id}>
-                                {genre.name}
-                            </Text>)
+                                {genre.name}</Text>)
                     })}
                 
                 </View>)}
@@ -60,7 +80,20 @@ const Detail = ({route, navigation}) => {
                 <Text style={styles.release}>{'Release date : '+ movieDetail.release_date}</Text>
                
             </View>
-            </ScrollView>)}
+            </ScrollView>
+            <Modal animationType="slide" visible={modalVisible}>
+                   
+                   <View style={styles.videoModal}>
+                   <Text>{'fdjifkdsj'}</Text>
+                    <Vedio onClose={videoShown} />
+                   
+ 
+                   </View>
+            </Modal>
+            </View>
+            
+            )}
+
             {!loaded && <ActivityIndicator size="large" /> }
 
         </React.Fragment>
@@ -106,6 +139,12 @@ const styles =StyleSheet.create({
         position: 'absolute',
         top: -45,
         right: 20,
+    },
+    videoModal:{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 20,
     }
 
 }) 
